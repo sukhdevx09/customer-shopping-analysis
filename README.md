@@ -10,35 +10,25 @@ A leading retail company wants to better understand its customers' shopping beha
 ---
 
 ## 🛠️ Tech Stack
-- **Python** — Data cleaning & transformation
-- **MySQL** — Data storage & SQL analysis
+- **Python** — Data loading into MySQL
+- **MySQL** — Data cleaning & SQL analysis
 - **Power BI** — Interactive dashboard
-- **Libraries** — Pandas, NumPy, SQLAlchemy, Matplotlib, Seaborn
+- **Libraries** — Pandas, SQLAlchemy
 
 ---
 
 ## 📁 Project Structure
 
 customer-shopping-analysis/
-
-├── data/                        → Raw dataset
-
-├── notebooks/                   → Jupyter notebook (EDA)
-
+├── data/ → Raw dataset
 ├── src/
-
-│   ├── db_connection.py         → MySQL connection helper
-
-│   └── analysis.py              → ETL pipeline
-
-├── dashboard/                   → Power BI dashboard (.pbix)
-
-├── customer_behavior_sql_queries.sql  → 10 SQL business queries
-
-├── Customer Shopping Behavior Analysis.pdf  → Project report
-
+│ └── load_data.py → Loads CSV into MySQL
+├── sql/
+│ ├── data_cleaning.sql → Data cleaning in SQL
+│ └── business_queries.sql → 10 SQL business queries
+├── dashboard/ → Power BI dashboard (.pbix)
+├── Customer Shopping Behavior Analysis.pdf → Project report
 ├── requirements.txt
-
 └── README.md
 
 ---
@@ -69,29 +59,34 @@ p3venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**4. Configure MySQL**
-Create a `.env` file in the root folder:
-DB_USERNAME=root
-
-DB_PASSWORD=your_password
-
-DB_HOST=localhost
-
-DB_PORT=3306
-
-DB_NAME=customer_behavior
-
-**5. Create MySQL database**
+**4. Create MySQL database**
 ```sql
 CREATE DATABASE customer_behavior;
 ```
 
-**6. Run the pipeline**
+**5. Load data into MySQL**
 ```bash
-python src/analysis.py
+python src/load_data.py
 ```
 
+**6. Connect MySQL in VS Code**
+
+Host: 127.0.0.1
+Port: 3306
+Username: root
+Database: customer_behavior
+
+**7. Run SQL files**
+- First run `sql/data_cleaning.sql`
+- Then run `sql/business_queries.sql`
+
 ---
+
+## 🧹 Data Cleaning (SQL)
+- Checked total records and missing values
+- Verified no duplicate customer IDs
+- Confirmed `age_group` and `purchase_frequency_days` columns
+- Validated distinct values in categorical columns
 
 ## 🔍 SQL Analysis (10 Business Queries)
 | # | Query | Technique |
@@ -110,11 +105,11 @@ python src/analysis.py
 ---
 
 ## 💡 Key Insights
-- **Male customers** generate significantly higher revenue ($157,890) than female ($75,191)
-- **73% of customers** are non-subscribers but contribute the majority of revenue
+- **Male customers** generate significantly higher revenue ($157,890) vs female ($75,191)
+- **73% of customers** are non-subscribers but contribute majority of revenue
 - **Young Adults** are the highest revenue-generating age group ($62,143)
 - **Loyal customers** make up 80% of the customer base (3,116 out of 3,900)
-- **Express shipping** users have a slightly higher average spend ($60.48) vs Standard ($58.46)
+- **Express shipping** users have slightly higher avg spend ($60.48) vs Standard ($58.46)
 
 ---
 
