@@ -10,23 +10,25 @@ A leading retail company wants to better understand its customers' shopping beha
 ---
 
 ## 🛠️ Tech Stack
-- **Python** — Data loading into MySQL
-- **MySQL** — Data cleaning & SQL analysis
+- **Python** — Loads raw data into MySQL
+- **MySQL** — Data cleaning, feature engineering & business analysis (SQL)
 - **Power BI** — Interactive dashboard
-- **Libraries** — Pandas, SQLAlchemy
+- **Libraries** — Pandas, SQLAlchemy, PyMySQL, python-dotenv
 
 ---
 
 ## 📁 Project Structure
 
 customer-shopping-analysis/
-├── data/ → Raw dataset
+├── data/ → Raw dataset (CSV)
 ├── src/
-│ └── load_data.py → Loads CSV into MySQL
+│ └── load_data.py → Loads raw CSV into MySQL as customer_raw
 ├── sql/
-│ ├── data_cleaning.sql → Data cleaning in SQL
+│ ├── data_cleaning.sql → Cleaning, dedup, missing values, feature engineering
 │ └── business_queries.sql → 10 SQL business queries
-├── dashboard/ → Power BI dashboard (.pbix)
+├── deshboard/
+│ ├── customer_behavior_deshboard.pbix → Power BI dashboard (source file)
+│ └── customer_behavior_dashboard.pdf → Dashboard export (quick preview)
 ├── Customer Shopping Behavior Analysis.pdf → Project report
 ├── requirements.txt
 └── README.md
@@ -44,7 +46,7 @@ customer-shopping-analysis/
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/yourusername/customer-shopping-analysis.git
+git clone https://github.com/sukhdevx09/customer-shopping-analysis.git
 cd customer-shopping-analysis
 ```
 
@@ -59,34 +61,37 @@ p3venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**4. Create MySQL database**
+**4. Create a `.env` file** in the project root with your MySQL credentials:
+
+DB_USER=root
+DB_PASSWORD=your_password
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=customer_behavior
+
+**5. Create MySQL database**
 ```sql
 CREATE DATABASE customer_behavior;
 ```
 
-**5. Load data into MySQL**
+**6. Load raw data into MySQL**
 ```bash
 python src/load_data.py
 ```
 
-**6. Connect MySQL in VS Code**
-
-Host: 127.0.0.1
-Port: 3306
-Username: root
-Database: customer_behavior
-
-**7. Run SQL files**
+**7. Run SQL files in order**
 - First run `sql/data_cleaning.sql`
 - Then run `sql/business_queries.sql`
 
 ---
 
-## 🧹 Data Cleaning (SQL)
-- Checked total records and missing values
-- Verified no duplicate customer IDs
-- Confirmed `age_group` and `purchase_frequency_days` columns
-- Validated distinct values in categorical columns
+## 🧹 Data Cleaning & Feature Engineering (SQL)
+- Renamed raw table to `customer_raw`, created a cleaned `customer` table with snake_case columns
+- Checked total records, missing values, and duplicate customer IDs
+- Imputed missing `review_rating` values using the average rating within the same product category
+- Dropped `promo_code_used` (found identical to `discount_applied`)
+- Added `age_group` column (Young Adult, Adult, Middle-aged, Senior)
+- Added `purchase_frequency_days` column (converted from text frequency labels to numeric days)
 
 ## 🔍 SQL Analysis (10 Business Queries)
 | # | Query | Technique |
@@ -101,6 +106,11 @@ Database: customer_behavior
 | Q8 | Top 3 Products per Category | Window Function (ROW_NUMBER) |
 | Q9 | Repeat Buyers & Subscriptions | WHERE, GROUP BY |
 | Q10 | Revenue by Age Group | GROUP BY, SUM |
+
+---
+
+## 📈 Power BI Dashboard
+Built on top of the 10 SQL queries — includes KPI cards (total customers, average review rating, average purchase amount), a subscription status breakdown, revenue/sales by category, revenue by age group, and slicers for gender and shipping type.
 
 ---
 
